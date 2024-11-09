@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const version = "0.0.2"
+const version = "0.0.3"
 
 type config struct {
 	port int
@@ -50,9 +50,18 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
-	err := srv.ListenAndServe()
-	logger.Fatal(err)
+	go func() {
+		logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
+		err := srv.ListenAndServe()
+		logger.Fatal(err)
+	}()
+
+	for i := 1; i <= 10; i++ {
+		logger.Printf("Status %d\n", i)
+		time.Sleep(3 * time.Second)
+	}
+
+	select {}
 }
 
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
