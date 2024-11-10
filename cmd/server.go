@@ -11,7 +11,7 @@ import (
 	"github.com/SergioPopovs176/exploding-kittens/game"
 )
 
-const version = "0.0.3"
+const version = "0.0.5"
 
 type config struct {
 	port int
@@ -21,6 +21,7 @@ type config struct {
 type application struct {
 	config config
 	logger *log.Logger
+	game   *game.Game
 }
 
 func main() {
@@ -34,15 +35,20 @@ func main() {
 	flag.StringVar(&cfg.env, "env", "dev", "Environment (dev|stage|prod)")
 	flag.Parse()
 
+	game := game.Ini(logger)
+
 	app := &application{
 		config: cfg,
 		logger: logger,
+		game:   game,
 	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /v0/healthcheck", app.healthcheckHandler)
 	mux.HandleFunc("GET /v0/client/{id}", app.clientHandler)
-	mux.HandleFunc("GET /v0/game/status", app.gameStatusHandler)
+	mux.HandleFunc("GET /v0/app/status", app.gameStatusHandler)
+
+	mux.HandleFunc("GET /v0/game/status", app.game.GetStatusHandler)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
@@ -51,8 +57,6 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
-
-	game := game.Ini(logger)
 
 	go func() {
 		logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
@@ -87,7 +91,7 @@ func (app *application) clientHandler(w http.ResponseWriter, r *http.Request) {
 func (app *application) gameStatusHandler(w http.ResponseWriter, r *http.Request) {
 	app.logger.Println("gameStatusHandler ...")
 
-	fmt.Fprintln(w, "Game status: ready")
+	fmt.Fprintln(w, "App status: ready")
 	fmt.Fprintf(w, "Client amount: %d\n", 0)
 	fmt.Fprintf(w, "version: %s\n", version)
 }
