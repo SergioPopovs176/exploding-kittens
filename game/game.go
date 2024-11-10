@@ -2,6 +2,8 @@ package game
 
 import (
 	"log"
+	"os"
+	"syscall"
 	"time"
 )
 
@@ -28,10 +30,24 @@ func (g *Game) Start() error {
 		g.counter = counter
 		time.Sleep(5 * time.Second)
 
-		if counter == 15 {
+		if counter == 10 {
 			exit = true
 			g.status = "finish"
 		}
+	}
+
+	g.logger.Println("Sending SIGTERM to self")
+	// Отправка SIGTERM самому себе
+	p, err := os.FindProcess(os.Getpid())
+	if err != nil {
+		g.logger.Println("Error finding process:", err)
+		return err
+	}
+
+	// Отправка сигнала SIGTERM текущему процессу
+	if err := p.Signal(syscall.SIGTERM); err != nil {
+		g.logger.Println("Error sending SIGTERM:", err)
+		return err
 	}
 
 	return nil
