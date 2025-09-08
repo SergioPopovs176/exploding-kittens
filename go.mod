@@ -1,3 +1,3 @@
-module github.com/SergioPopovs176/exploding-kittens
+module expkit
 
-go 1.23.3
+go 1.25.1
