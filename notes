@@ -1,1 +1,2 @@
-sudo docker compose up -d --build
+база вроде создается в 
+/var/lib/docker/volumes/pgdata/_data

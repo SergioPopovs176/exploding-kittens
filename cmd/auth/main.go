@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	fmt.Println("Auth service starting ...")
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, World!")
 	})

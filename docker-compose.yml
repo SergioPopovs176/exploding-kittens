@@ -1,6 +1,8 @@
 services:
-  web:
-    build: .
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.auth
     ports:
       - "8081:8081"
     depends_on:

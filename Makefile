@@ -1,9 +1,9 @@
-APP_NAME = expkit
+APP_NAME = exploding-kittens
 
-.PHONY: build run stop logs restart docker-build docker-up docker-down
+.PHONY: logs restart build up down db-shell
 
 # Docker: сборка образа
-docker-build:
+build:
 	docker compose build
 
 # Docker: поднять сервисы в фоне
@@ -21,4 +21,9 @@ restart: docker-down docker-up
 
 # Логи
 logs:
-	docker compose logs -f
+	sudo docker compose logs -f
+
+# Подключиться в psql внутри контейнера базы
+db-shell:
+	@echo "🐘 Connecting to Postgres..."
+	sudo docker compose -p $(APP_NAME) exec db psql -U postgres -d expkit
