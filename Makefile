@@ -8,10 +8,12 @@ docker-build:
 
 # Docker: поднять сервисы в фоне
 up:
+	@echo "Starting services (Go + Postgres)..."
 	sudo docker compose up -d
 
 # Docker: остановить сервисы и удалить контейнеры
 down:
+	@echo "Stopping services..."
 	sudo docker compose down
 
 # Docker: перезапуск
