@@ -10,13 +10,12 @@ COPY . .
 
 RUN go build -o auth ./cmd/auth 
 
-FROM scratch
+FROM alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/auth .
 COPY --from=builder /app/configs/auth-server.yml ./configs/
-COPY --from=builder /app/.env .
+COPY --from=builder /app/auth .
 
 EXPOSE 8081
 
